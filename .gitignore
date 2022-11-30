@@ -1,0 +1,12 @@
+# Project
+node_modules
+dist
+src/proto/**
+
+# IDEs
+.idea
+.vscode
+
+# System
+.DS_Store
+
