@@ -2,7 +2,7 @@ import { ConduitActiveSchema, DatabaseProvider, TYPE } from '@conduitplatform/gr
 
 const schema = {
   _id: TYPE.ObjectId,
-  name: {
+  receiverName: {
     type: TYPE.String,
     required: true,
   },
@@ -22,23 +22,23 @@ const modelOptions = {
 } as const;
 const collectionName = undefined;
 
-export class Hello extends ConduitActiveSchema<Hello> {
-  private static _instance: Hello;
+export class CookieReceipt extends ConduitActiveSchema<CookieReceipt> {
+  private static _instance: CookieReceipt;
   _id!: string;
-  name!: string;
+  receiverName!: string;
   createdAt!: Date;
   updatedAt!: Date;
 
   private constructor(database: DatabaseProvider) {
-    super(database, Hello.name, schema, modelOptions, collectionName);
+    super(database, CookieReceipt.name, schema, modelOptions, collectionName);
   }
 
   static getInstance(database?: DatabaseProvider) {
-    if (Hello._instance) return Hello._instance;
+    if (CookieReceipt._instance) return CookieReceipt._instance;
     if (!database) {
       throw new Error('No database instance provided!');
     }
-    Hello._instance = new Hello(database);
-    return Hello._instance;
+    CookieReceipt._instance = new CookieReceipt(database);
+    return CookieReceipt._instance;
   }
 }

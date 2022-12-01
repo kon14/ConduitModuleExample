@@ -7,16 +7,16 @@ import ConduitGrpcSdk, {
   GrpcResponse,
 } from '@conduitplatform/grpc-sdk';
 import {
-  HelloRequest,
-  HelloResponse,
-  ResetHellosRequest,
-  ResetHellosResponse,
+  GetCookieRequest,
+  GetCookieResponse,
+  ResetCookiesRequest,
+  ResetCookiesResponse,
 } from './proto/src/service';
 import ModuleConfigSchema, { Config } from './config';
 import metricsSchema from './metrics';
 import { AdminRoutes, AppRoutes } from './routes';
 import * as models from './models';
-import {ModuleStateObject} from './types';
+import { ModuleStateObject } from './types';
 import { status } from '@grpc/grpc-js';
 import path from 'path';
 
@@ -30,8 +30,8 @@ export default class Module extends ManagedModule<Config> {
       // Standard Conduit RPCs
       SetConfig: this.setConfig.bind(this),
       // Module RPCs
-      Hello: this.helloGrpc.bind(this),
-      ResetHellos: this.resetHellosGrpc.bind(this),
+      GetCookie: this.getCookieGrpc.bind(this),
+      ResetCookies: this.resetCookiesGrpc.bind(this),
     },
   };
   private database?: DatabaseProvider;
@@ -43,7 +43,7 @@ export default class Module extends ManagedModule<Config> {
     super('example');
     this.updateHealth(HealthCheckStatus.UNKNOWN, true);
     this.state = {
-      hellosLeft: ConfigController.getInstance().config.defaultHellos,
+      cookiesLeft: ConfigController.getInstance().config.defaultCookieCount,
       illegalNames: [], // initialized during onConfig() lifecycle hook
     };
     this.adminRouter = new AdminRoutes(this.state);
@@ -125,43 +125,43 @@ export default class Module extends ManagedModule<Config> {
   }
 
   async initializeMetrics() {
-    const hellosTotal = await models.Hello.getInstance().countDocuments({});
-    ConduitGrpcSdk.Metrics?.set('hello_requests_total', hellosTotal);
-    ConduitGrpcSdk.Metrics?.set('hellos_left', this.state.hellosLeft);
+    const cookiesTotal = await models.CookieReceipt.getInstance().countDocuments({});
+    ConduitGrpcSdk.Metrics?.set('cookie_requests_total', cookiesTotal);
+    ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
   }
 
   // gRPC RPCs
-  async helloGrpc(call: GrpcRequest<HelloRequest>, callback: GrpcResponse<HelloResponse>) {
-    ConduitGrpcSdk.Metrics?.increment('hello_requests_total', 1);
-    ConduitGrpcSdk.Metrics?.set('hellos_left', --this.state.hellosLeft);
+  async getCookieGrpc(call: GrpcRequest<GetCookieRequest>, callback: GrpcResponse<GetCookieResponse>) {
+    ConduitGrpcSdk.Metrics?.increment('cookie_requests_total', 1);
+    ConduitGrpcSdk.Metrics?.set('cookies_left', --this.state.cookiesLeft);
     const { name } = call.request;
-    if (this.state.hellosLeft === 0) {
+    if (this.state.cookiesLeft === 0) {
       return callback({
         code: status.RESOURCE_EXHAUSTED,
-        message: 'We run out of Hello responses 😵!',
+        message: 'We run out of cookies 😵!',
       });
     }
     this.state.illegalNames.forEach(illegalName => {
       if (name.toLowerCase() === illegalName.toLowerCase()) {
         return callback({
           code: status.ABORTED,
-          message: 'Your name sucks 💅.',
+          message: `I'm sorry ${name}, no cookies for you today 💅.`,
         });
       }
     });
     callback(null, {
-      msg: `Hey there ${name}, that's a fine name you got there 😘.`,
+      msg: `Hey there ${name}, have a cookie 🍪.`,
     });
   }
 
-  async resetHellosGrpc(call: GrpcRequest<ResetHellosRequest>, callback: GrpcResponse<ResetHellosResponse>) {
-    const defaultHellosLeft: number = ConfigController.getInstance().config.defaultHellos;
-    const previousHellosLeft = this.state.hellosLeft;
-    this.state.hellosLeft = call.request.hellosLeft ?? defaultHellosLeft;
-    ConduitGrpcSdk.Metrics?.set('hellos_left', this.state.hellosLeft);
+  async resetCookiesGrpc(call: GrpcRequest<ResetCookiesRequest>, callback: GrpcResponse<ResetCookiesResponse>) {
+    const defaultCookiesLeft: number = ConfigController.getInstance().config.defaultCookieCount;
+    const previousCookiesLeft = this.state.cookiesLeft;
+    this.state.cookiesLeft = call.request.cookiesLeft ?? defaultCookiesLeft;
+    ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
     callback(null, {
-      previousHellosLeft,
-      currentHellosLeft: this.state.hellosLeft },
+      previousCookiesLeft,
+      currentCookiesLeft: this.state.cookiesLeft },
     );
   }
 }

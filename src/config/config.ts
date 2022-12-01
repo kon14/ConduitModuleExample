@@ -4,13 +4,13 @@ export default {
     format: 'Boolean',
     default: true,
   },
-  defaultHellos: {
-    doc: `The default amount of available 'Hello's on service startup and 'Hello's reset`,
+  defaultCookieCount: {
+    doc: `The default amount of available cookies during service startup and reset`,
     format: 'Number',
     default: 20,
   },
   illegalNames: {
-    doc: `A collection of illegal names that can't be used in 'Hello' requests`,
+    doc: `A collection of illegal names that can't won't be receiving cookies`,
     format: 'Array',
     default: ['World'],
     children: {

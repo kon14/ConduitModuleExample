@@ -33,31 +33,31 @@ export class AdminRoutes {
     this.routingManager!.clear();
     this.routingManager!.route(
       {
-        name: 'ResetHellos',
-        path: '/hellos/reset',
+        name: 'ResetCookies',
+        path: '/cookies/reset',
         action: ConduitRouteActions.POST,
-        description: 'Reset Hello requests left.',
+        description: 'Reset the amount of available cookies.',
         bodyParams: {
-          hellosLeft: ConduitNumber.Optional,
+          cookiesLeft: ConduitNumber.Optional,
         },
       },
-      new ConduitRouteReturnDefinition('ResetHellosResponse', {
-        previousHellosLeft: ConduitNumber.Required,
-        currentHellosLeft: ConduitNumber.Optional,
+      new ConduitRouteReturnDefinition('ResetCookiesResponse', {
+        previousCookiesLeft: ConduitNumber.Required,
+        currentCookiesLeft: ConduitNumber.Optional,
       }),
-      this.resetHellos.bind(this),
+      this.resetCookies.bind(this),
     );
     this.routingManager!.registerRoutes();
   }
 
-  async resetHellos(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
-    const defaultHellosLeft: string = ConfigController.getInstance().config.defaultHellos;
-    const previousHellosLeft = this.state.hellosLeft;
-    this.state.hellosLeft = call.request.params.hellosLeft ?? defaultHellosLeft;
-    ConduitGrpcSdk.Metrics?.set('hellos_left', this.state.hellosLeft);
+  async resetCookies(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+    const defaultCookiesLeft: string = ConfigController.getInstance().config.defaultCookieCount;
+    const previousCookiesLeft = this.state.cookiesLeft;
+    this.state.cookiesLeft = call.request.params.cookiesLeft ?? defaultCookiesLeft;
+    ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
     return {
-      previousHellosLeft,
-      currentHellosLeft: this.state.hellosLeft,
+      previousCookiesLeft,
+      currentCookiesLeft: this.state.cookiesLeft,
     };
   }
 }

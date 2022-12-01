@@ -9,8 +9,8 @@ service ConduitModule {
   // Standard Conduit RPCs
   rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
   // Module RPCs
-  rpc Hello(HelloRequest) returns (HelloResponse);
-  rpc ResetHellos(ResetHellosRequest) returns (ResetHellosResponse);
+  rpc GetCookie(GetCookieRequest) returns (GetCookieResponse);
+  rpc ResetCookies(ResetCookiesRequest) returns (ResetCookiesResponse);
 }
 
 // Conduit Types
@@ -23,19 +23,19 @@ message SetConfigResponse {
 }
 
 // Module Types
-message HelloRequest {
+message GetCookieRequest {
   string name = 1;
 }
 
-message HelloResponse {
+message GetCookieResponse {
   string msg = 1;
 }
 
-message ResetHellosRequest {
-  optional int32 hellosLeft = 1;
+message ResetCookiesRequest {
+  optional int32 cookiesLeft = 1;
 }
 
-message ResetHellosResponse {
-  int32 previousHellosLeft = 1;
-  int32 currentHellosLeft = 2;
+message ResetCookiesResponse {
+  int32 previousCookiesLeft = 1;
+  int32 currentCookiesLeft = 2;
 }

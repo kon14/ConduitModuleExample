@@ -1,18 +1,18 @@
 import { MetricType } from '@conduitplatform/grpc-sdk';
 
 export default {
-  helloRequestsTotal: {
+  cookiesRequestsTotal: {
     type: MetricType.Gauge,
     config: {
-      name: 'hello_requests_total',
-      help: `Tracks the total number of 'Hello' requests`,
+      name: 'cookie_requests_total',
+      help: `Tracks the total number of cookie requests`,
     },
   },
-  hellosLeft: {
+  cookiesLeft: {
     type: MetricType.Counter,
     config: {
-      name: 'hellos_left',
-      help: `Tracks the number of 'Hello's left before resource exhaustion`,
+      name: 'cookies_left',
+      help: `Tracks the amount of cookies currently available`,
     },
   },
 };

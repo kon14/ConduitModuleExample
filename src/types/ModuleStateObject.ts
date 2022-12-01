@@ -1,4 +1,4 @@
 export type ModuleStateObject = {
-  hellosLeft: number,
+  cookiesLeft: number,
   illegalNames: string[],
 };

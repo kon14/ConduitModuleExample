@@ -9,6 +9,7 @@ import ConduitGrpcSdk, {
   ConduitString,
 } from '@conduitplatform/grpc-sdk';
 import { ModuleStateObject} from '../../types';
+import { CookieReceipt } from '../../models';
 import { status } from '@grpc/grpc-js';
 
 export class AppRoutes {
@@ -34,35 +35,38 @@ export class AppRoutes {
     this.routingManager!.clear();
     this.routingManager!.route(
       {
-        name: 'Hello',
-        path: '/hellos',
+        name: 'GetCookie',
+        path: '/cookies',
         action: ConduitRouteActions.POST,
-        description: 'Get greeted or judged upon!',
+        description: 'Receive a free cookie... or get judged upon!',
         bodyParams: {
-          nome: ConduitString.Required,
+          name: ConduitString.Required,
         },
       },
-      new ConduitRouteReturnDefinition('HelloResponse', 'String'),
-      this.hello.bind(this),
+      new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
+      this.getCookie.bind(this),
     );
     this.routingManager!.registerRoutes();
   }
 
-  async hello(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
-    ConduitGrpcSdk.Metrics?.increment('hello_requests_total', 1);
-    ConduitGrpcSdk.Metrics?.set('hellos_left', --this.state.hellosLeft);
+  async getCookie(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+    ConduitGrpcSdk.Metrics?.increment('cookie_requests_total', 1);
+    ConduitGrpcSdk.Metrics?.set('cookie_left', --this.state.cookiesLeft);
     const name: string = call.request.params.name;
-    if (this.state.hellosLeft === 0) {
+    if (this.state.cookiesLeft === 0) {
       throw new GrpcError(
         status.RESOURCE_EXHAUSTED,
-        'We run out of Hello responses 😵!'
+        'We run out of cookies 😵!',
       );
     }
     this.state.illegalNames.forEach(illegalName => {
       if (name.toLowerCase() === illegalName.toLowerCase()) {
-        return 'Your name sucks 💅.';
+        return `I'm sorry ${name}, no cookies for you today 💅.`;
       }
     });
-    return `Hey there ${name}, that's a fine name you got there 😘.`;
+    await CookieReceipt.getInstance().create({
+      receiverName: name,
+    });
+    return `Hey there ${name}, have a cookie 🍪.`;
   }
 }
