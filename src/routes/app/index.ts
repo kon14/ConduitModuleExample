@@ -24,7 +24,7 @@ export class AppRoutes {
     if (this.initialized) return;
     this.server = server;
     this.grpcSdk = grpcSdk;
-    this.routingManager = new RoutingManager(grpcSdk.admin, server);
+    this.routingManager = new RoutingManager(grpcSdk.router!, server);
     this.initialized = true;
   }
 
@@ -51,7 +51,7 @@ export class AppRoutes {
 
   async getCookie(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
     ConduitGrpcSdk.Metrics?.increment('cookie_requests_total', 1);
-    ConduitGrpcSdk.Metrics?.set('cookie_left', --this.state.cookiesLeft);
+    ConduitGrpcSdk.Metrics?.set('cookies_left', --this.state.cookiesLeft);
     const name: string = call.request.params.name;
     if (this.state.cookiesLeft === 0) {
       throw new GrpcError(
@@ -59,11 +59,11 @@ export class AppRoutes {
         'We run out of cookies 😵!',
       );
     }
-    this.state.illegalNames.forEach(illegalName => {
+    for (const illegalName of this.state.illegalNames) {
       if (name.toLowerCase() === illegalName.toLowerCase()) {
         return `I'm sorry ${name}, no cookies for you today 💅.`;
       }
-    });
+    }
     await CookieReceipt.getInstance().create({
       receiverName: name,
     });

@@ -38,13 +38,15 @@ export default class Module extends ManagedModule<Config> {
   private adminRouter: AdminRoutes;
   private appRouter: AppRoutes;
   private readonly state: ModuleStateObject;
+  private initialized = false;
 
   constructor() {
     super('example');
     this.updateHealth(HealthCheckStatus.UNKNOWN, true);
     this.state = {
-      cookiesLeft: ConfigController.getInstance().config.defaultCookieCount,
-      illegalNames: [], // initialized during onConfig() lifecycle hook
+      // Config-dependent values initialized during onConfig() lifecycle hook
+      cookiesLeft: 0,
+      illegalNames: [],
     };
     this.adminRouter = new AdminRoutes(this.state);
     this.appRouter = new AppRoutes(this.state);
@@ -57,7 +59,6 @@ export default class Module extends ManagedModule<Config> {
    */
   async preServerStart() {
     this.adminRouter.init(this.grpcServer, this.grpcSdk);
-    this.appRouter.init(this.grpcServer, this.grpcSdk);
   }
 
   /**
@@ -87,6 +88,7 @@ export default class Module extends ManagedModule<Config> {
     this.adminRouter.registerRoutes();
     await this.grpcSdk.monitorModule('router', async (serving) => {
       if (serving) {
+        this.appRouter.init(this.grpcServer, this.grpcSdk);
         await this.appRouter.registerRoutes();
       }
     });
@@ -111,7 +113,11 @@ export default class Module extends ManagedModule<Config> {
     if (!config.active) {
       this.updateHealth(HealthCheckStatus.NOT_SERVING);
     } else {
-      this.state.illegalNames = ConfigController.getInstance().config.illegalNames;
+      this.state.illegalNames = config.illegalNames;
+      if (!this.initialized) {
+        this.state.cookiesLeft = config.defaultCookieCount;
+        this.initialized = true;
+      }
       this.updateHealth(HealthCheckStatus.SERVING);
     }
   }
@@ -126,7 +132,7 @@ export default class Module extends ManagedModule<Config> {
 
   async initializeMetrics() {
     const cookiesTotal = await models.CookieReceipt.getInstance().countDocuments({});
-    ConduitGrpcSdk.Metrics?.set('cookie_requests_total', cookiesTotal);
+    ConduitGrpcSdk.Metrics?.increment('cookie_requests_total', cookiesTotal);
     ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
   }
 
