@@ -1,0 +1,86 @@
+<div align="center">
+  <br>
+    <a href="https://getconduit.dev" target="_blank"><img src="https://getconduit.dev/conduitLogo.svg" height="80px" alt="logo"/></a>
+    <br/>
+    <h3>The only Backend you'll ever need.</h3>
+</div>
+
+# Conduit Module Example
+
+This repo contains a minimal implementations for a [Conduit](https://github.com/ConduitPlatform/Conduit)
+module written in Node.js and TypeScript.<br />
+
+It's meant to be referenced while reading through [Conduit's SDK Documentation](https://getconduit.dev/docs/sdk/)
+and used as a starting point for building your own Conduit modules.
+
+It is assumed that you've already read through the aforementioned documentation,
+and any critical prerequisites that may list, and familiarized yourself with the concepts discussed.
+
+If you need any sort of help or wish to suggest improvements over the code or docs,
+do not hesitate to open an issue or let us know on our [Discord](https://discord.com/invite/fBqUQ23M7g).
+
+## Module Description 🧩
+
+This codebase implements a fairly minimal Conduit module, allowing people to receive free cookies 🍪.<br />
+It supports configuration (for blacklisting people that shouldn't receive cookies etc)
+and exposes APIs for administrators and client applications.<br />
+It also showcases the use of metrics (Prometheus) and logs (Loki).
+
+_Tip: Conduit automatically generates documentation for both REST (Swagger) and GraphQL endpoints._
+
+Administrative APIs:
+- gRPC
+- REST
+- GraphQL (optionally enabled through Conduit's Admin Panel)
+
+Application APIs:
+- REST
+- GraphQL
+
+## Building & Running 🔨
+
+It is assumed that you are building and running this in a Linux or macOS environment.<br />
+If you're using Windows, make sure you're using WSL.
+
+``` bash
+# Install Dependencies
+npm run setup
+# Build Module
+npm run build
+```
+
+## Running 💻
+
+We assume that you've already brought up a Conduit deployment using the [Conduit CLI](https://getconduit.dev/docs/cli).<br />
+Make sure your deployment's major version matches the one of the example module implementation being used!
+
+If you don't intend to use the default deployment configuration provided by Conduit CLI
+(eg by running Conduit directly on the host), make sure that you update the provided `.env` file
+(specifically `CONDUIT_SERVER`).
+
+``` bash
+# Start Module
+npm run start
+```
+
+## Now What 🤔
+
+We suggest that you start out by verifying your module's example endpoints are registered and operational.<br />
+Once you get a grasp of how the code comes together, you may proceed to altering its behavior and expanding its functionality.
+
+Bringing up Conduit through the CLI should have already redirected you to your admin dashboard.<br />
+You may locate the Swagger and GraphQL related resources referenced below through the relevant elements in the home page.
+
+_Tip: Default Admin Credentials: `admin/admin`_
+
+### REST
+You may perform REST requests and browse your endpoint documentation directly through Swagger UI,
+or by importing your APIs' Swagger JSON files to an HTTP API testing tool of your choice.
+
+### GraphQL
+You may perform GraphQL queries and mutations directly through the GraphQL Playground,
+or through an GraphQL API testing tool of your choice.
+
+### gRPC
+Import `src/service.proto` in a gRPC testing tool of your choice and specify `0.0.0.0:55152` as your server's address.<br />
+You may then perform your gRPC requests.
