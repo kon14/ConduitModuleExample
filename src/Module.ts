@@ -3,6 +3,7 @@ import ConduitGrpcSdk, {
   DatabaseProvider,
   ConfigController,
   HealthCheckStatus,
+  ConduitActiveSchema,
   GrpcRequest,
   GrpcResponse,
 } from '@conduitplatform/grpc-sdk';
@@ -44,6 +45,8 @@ export default class Module extends ManagedModule<Config> {
     super('example');
     this.updateHealth(HealthCheckStatus.UNKNOWN, true);
     this.state = {
+      // Module monitoring initiated during onRegister() lifecycle hook
+      authAvailable: false,
       // Config-dependent values initialized during onConfig() lifecycle hook
       cookiesLeft: 0,
       illegalNames: [],
@@ -85,9 +88,14 @@ export default class Module extends ManagedModule<Config> {
    * that would require other modules being able to reach you
    */
   async onRegister() {
-    this.adminRouter.registerRoutes();
+    this.adminRouter.registerRoutes(); // Administrative routing is always available
+    this.state.authAvailable = !!this.grpcSdk.authentication;
+    await this.grpcSdk.monitorModule('authentication', async (serving) => {
+      this.state.authAvailable = serving;
+    });
     await this.grpcSdk.monitorModule('router', async (serving) => {
       if (serving) {
+        // Application routing available once Router module comes online
         this.appRouter.init(this.grpcServer, this.grpcSdk);
         await this.appRouter.registerRoutes();
       }
@@ -123,9 +131,15 @@ export default class Module extends ManagedModule<Config> {
   }
 
   protected registerSchemas() {
-    const promises = Object.values(models).map((model: any) => {
+    const promises = Object.values(models).map(model => {
       const modelInstance = model.getInstance(this.database);
-      return this.database!.createSchemaFromAdapter(modelInstance);
+      if (
+        Object.keys((modelInstance as ConduitActiveSchema<typeof modelInstance>).fields)
+          .length !== 0
+      ) {
+        // only creating owned schemas
+        return this.database!.createSchemaFromAdapter(modelInstance);
+      }
     });
     return Promise.all(promises);
   }

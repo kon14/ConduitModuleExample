@@ -9,7 +9,7 @@ import ConduitGrpcSdk, {
   ConduitString,
 } from '@conduitplatform/grpc-sdk';
 import { ModuleStateObject} from '../../types';
-import { CookieReceipt } from '../../models';
+import { CookieReceipt, User } from '../../models';
 import { status } from '@grpc/grpc-js';
 
 export class AppRoutes {
@@ -33,6 +33,7 @@ export class AppRoutes {
       throw new Error(`${this.constructor.name} not initialized yet!`);
     }
     this.routingManager!.clear();
+    // Unauthorized Variant
     this.routingManager!.route(
       {
         name: 'GetCookie',
@@ -44,15 +45,39 @@ export class AppRoutes {
         },
       },
       new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
-      this.getCookie.bind(this),
+      this.getCookieUnauthorized.bind(this),
     );
+    // Authorized Variant
+    if (this.state.authAvailable) {
+      this.routingManager!.route(
+        {
+          name: 'GetCookie',
+          path: '/cookies',
+          action: ConduitRouteActions.GET,
+          description: 'Receive a free cookie... or get judged upon!',
+          middlewares: ['authMiddleware'],
+        },
+        new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
+        this.getCookieAuthorized.bind(this),
+      );
+    }
     this.routingManager!.registerRoutes();
   }
 
-  async getCookie(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+  async getCookieUnauthorized(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+    const name: string = call.request.params.name;
+    return this.getCookie(name);
+  }
+
+  async getCookieAuthorized(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+    const user: User = call.request.context.user;
+    const name = user.email.split('@')[0];
+    return this.getCookie(name);
+  }
+
+  private async getCookie(name: string) {
     ConduitGrpcSdk.Metrics?.increment('cookie_requests_total', 1);
     ConduitGrpcSdk.Metrics?.set('cookies_left', --this.state.cookiesLeft);
-    const name: string = call.request.params.name;
     if (this.state.cookiesLeft === 0) {
       throw new GrpcError(
         status.RESOURCE_EXHAUSTED,
