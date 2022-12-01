@@ -6,6 +6,7 @@
   "scripts": {
     "setup": "npm ci",
     "build": "sh build.sh && rimraf dist && tsc",
+    "postbuild": "copyfiles -u 1 src/*.proto src/**/*.json ./dist/",
     "start": "node dist/index.js"
   },
   "keywords": [],
@@ -14,6 +15,7 @@
   "devDependencies": {
     "@types/convict": "^6.1.1",
     "@types/node": "^18.11.9",
+    "copyfiles": "^2.4.1",
     "ts-proto": "^1.135.0",
     "typescript": "^4.9.3"
   },
