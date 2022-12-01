@@ -17,3 +17,5 @@ protoc \
   --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false \
   --ts_proto_out=src/proto/ \
   ./src/service.proto
+mv ./src/proto/src/* ./src/proto
+rmdir ./src/proto/src

@@ -11,7 +11,7 @@ import {
   GetCookieResponse,
   ResetCookiesRequest,
   ResetCookiesResponse,
-} from './proto/src/service';
+} from './proto/service';
 import ModuleConfigSchema, { Config } from './config';
 import metricsSchema from './metrics';
 import { AdminRoutes, AppRoutes } from './routes';
