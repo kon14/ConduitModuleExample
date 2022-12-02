@@ -163,12 +163,14 @@ export default class Module extends ManagedModule<Config> {
     }
     this.state.illegalNames.forEach(illegalName => {
       if (name.toLowerCase() === illegalName.toLowerCase()) {
+        ConduitGrpcSdk.Logger.error(`${name} attempted to receive a cookie via gRPC`);
         return callback({
           code: status.ABORTED,
           message: `I'm sorry ${name}, no cookies for you today 💅.`,
         });
       }
     });
+    ConduitGrpcSdk.Logger.log(`${name} received a cookie via gRPC`);
     callback(null, {
       msg: `Hey there ${name}, have a cookie 🍪.`,
     });
@@ -178,6 +180,7 @@ export default class Module extends ManagedModule<Config> {
     const defaultCookiesLeft: number = ConfigController.getInstance().config.defaultCookieCount;
     const previousCookiesLeft = this.state.cookiesLeft;
     this.state.cookiesLeft = call.request.cookiesLeft ?? defaultCookiesLeft;
+    ConduitGrpcSdk.Logger.log(`Available cookies set to ${this.state.cookiesLeft} via gRPC`);
     ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
     callback(null, {
       previousCookiesLeft,

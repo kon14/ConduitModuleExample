@@ -54,6 +54,7 @@ export class AdminRoutes {
     const defaultCookiesLeft: string = ConfigController.getInstance().config.defaultCookieCount;
     const previousCookiesLeft = this.state.cookiesLeft;
     this.state.cookiesLeft = call.request.params.cookiesLeft ?? defaultCookiesLeft;
+    ConduitGrpcSdk.Logger.log(`Available cookies set to ${this.state.cookiesLeft} via REST/GraphQL`);
     ConduitGrpcSdk.Metrics?.set('cookies_left', this.state.cookiesLeft);
     return {
       previousCookiesLeft,

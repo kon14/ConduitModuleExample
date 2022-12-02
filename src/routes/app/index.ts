@@ -45,7 +45,7 @@ export class AppRoutes {
         },
       },
       new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
-      this.getCookieUnauthorized.bind(this),
+      this.getCookieUnauthenticated.bind(this),
     );
     // Authorized Variant
     if (this.state.authAvailable) {
@@ -58,18 +58,18 @@ export class AppRoutes {
           middlewares: ['authMiddleware'],
         },
         new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
-        this.getCookieAuthorized.bind(this),
+        this.getCookieAuthenticated.bind(this),
       );
     }
     this.routingManager!.registerRoutes();
   }
 
-  async getCookieUnauthorized(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+  async getCookieUnauthenticated(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
     const name: string = call.request.params.name;
     return this.getCookie(name);
   }
 
-  async getCookieAuthorized(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
+  async getCookieAuthenticated(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
     const user: User = call.request.context.user;
     const name = user.email.split('@')[0];
     return this.getCookie(name);
@@ -86,12 +86,14 @@ export class AppRoutes {
     }
     for (const illegalName of this.state.illegalNames) {
       if (name.toLowerCase() === illegalName.toLowerCase()) {
+        ConduitGrpcSdk.Logger.error(`${name} attempted to receive a cookie via REST/GraphQL`);
         return `I'm sorry ${name}, no cookies for you today 💅.`;
       }
     }
     await CookieReceipt.getInstance().create({
       receiverName: name,
     });
+    ConduitGrpcSdk.Logger.log(`${name} received a cookie via REST/GraphQL`);
     return `Hey there ${name}, have a cookie 🍪.`;
   }
 }

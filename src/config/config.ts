@@ -15,6 +15,6 @@ export default {
     default: ['Alex', 'Betty', 'Charlie'],
     children: {
       format: 'String'
-    }
+    },
   },
 };
