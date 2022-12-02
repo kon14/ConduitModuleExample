@@ -8,7 +8,7 @@ import ConduitGrpcSdk, {
   UnparsedRouterResponse,
   ConduitNumber,
 } from '@conduitplatform/grpc-sdk';
-import { ModuleStateObject} from '../../types';
+import { ModuleStateObject } from '../../types';
 
 export class AdminRoutes {
   private server?: GrpcServer;

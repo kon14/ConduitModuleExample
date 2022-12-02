@@ -8,7 +8,7 @@ import ConduitGrpcSdk, {
   UnparsedRouterResponse,
   ConduitString,
 } from '@conduitplatform/grpc-sdk';
-import { ModuleStateObject} from '../../types';
+import { ModuleStateObject } from '../../types';
 import { CookieReceipt, User } from '../../models';
 import { status } from '@grpc/grpc-js';
 
