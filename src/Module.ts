@@ -8,6 +8,7 @@ import ConduitGrpcSdk, {
   GrpcResponse,
 } from '@conduitplatform/grpc-sdk';
 import {
+  ConduitModuleDefinition,
   GetCookieRequest,
   GetCookieResponse,
   ResetCookiesRequest,
@@ -22,15 +23,13 @@ import { status } from '@grpc/grpc-js';
 import path from 'path';
 
 export default class Module extends ManagedModule<Config> {
+  protected _serviceDefinition = ConduitModuleDefinition;
   configSchema = ModuleConfigSchema;
   protected metricsSchema = metricsSchema;
   service = {
     protoPath: path.resolve(__dirname, 'service.proto'),
     protoDescription: 'example.ConduitModule',
     functions: {
-      // Standard Conduit RPCs
-      SetConfig: this.setConfig.bind(this),
-      // Module RPCs
       GetCookie: this.getCookieGrpc.bind(this),
       ResetCookies: this.resetCookiesGrpc.bind(this),
     },
@@ -42,7 +41,7 @@ export default class Module extends ManagedModule<Config> {
   private initialized = false;
 
   constructor() {
-    super('example');
+    super('example-module');
     this.updateHealth(HealthCheckStatus.UNKNOWN, true);
     this.state = {
       // Module monitoring initiated during onRegister() lifecycle hook

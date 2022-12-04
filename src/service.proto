@@ -6,23 +6,10 @@ package example;
 // https://grpc.io/docs/
 
 service ConduitModule {
-  // Standard Conduit RPCs
-  rpc SetConfig(SetConfigRequest) returns (SetConfigResponse);
-  // Module RPCs
   rpc GetCookie(GetCookieRequest) returns (GetCookieResponse);
   rpc ResetCookies(ResetCookiesRequest) returns (ResetCookiesResponse);
 }
 
-// Conduit Types
-message SetConfigRequest {
-  string newConfig = 1;
-}
-
-message SetConfigResponse {
-  string updatedConfig = 1;
-}
-
-// Module Types
 message GetCookieRequest {
   string name = 1;
 }

@@ -1,6 +1,6 @@
 {
   "name": "example-module",
-  "version": "0.15",
+  "version": "0.16.0",
   "description": "A minimal module implementation example for Conduit",
   "main": "dist/index.js",
   "scripts": {
@@ -25,5 +25,15 @@
     "convict": "^6.2.3",
     "dotenv": "^16.0.3",
     "rimraf": "^3.0.2"
+  },
+  "conduit": {
+    "dependencies": {
+      "core": {
+        "version": "^0.16"
+      },
+      "database": {
+        "version": "^0.16"
+      }
+    }
   }
 }
