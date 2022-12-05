@@ -8,7 +8,6 @@ import ConduitGrpcSdk, {
   GrpcResponse,
 } from '@conduitplatform/grpc-sdk';
 import {
-  ConduitModuleDefinition,
   GetCookieRequest,
   GetCookieResponse,
   ResetCookiesRequest,
@@ -23,7 +22,6 @@ import { status } from '@grpc/grpc-js';
 import path from 'path';
 
 export default class Module extends ManagedModule<Config> {
-  protected _serviceDefinition = ConduitModuleDefinition;
   configSchema = ModuleConfigSchema;
   protected metricsSchema = metricsSchema;
   service = {
