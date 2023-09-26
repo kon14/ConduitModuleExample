@@ -38,15 +38,15 @@ export class AppRoutes {
     // Unauthorized Variant
     this.routingManager!.route(
       {
-        name: 'GetCookie',
-        path: '/cookies',
-        action: ConduitRouteActions.POST,
+        name: 'GetCookieGuest',
+        path: '/cookies/guest',
+        action: ConduitRouteActions.GET,
         description: 'Receive a free cookie... or get judged upon!',
-        bodyParams: {
+        queryParams: {
           name: ConduitString.Required,
         },
       },
-      new ConduitRouteReturnDefinition('GetCookieResponse', 'String'),
+      new ConduitRouteReturnDefinition('GetCookieGuestResponse', 'String'),
       this.getCookieUnauthenticated.bind(this),
     );
     // Authorized Variant
@@ -67,7 +67,7 @@ export class AppRoutes {
   }
 
   async getCookieUnauthenticated(call: ParsedRouterRequest): Promise<UnparsedRouterResponse> {
-    const name: string = call.request.params.name;
+    const name: string = call.request.queryParams.name;
     return this.getCookie(name);
   }
 

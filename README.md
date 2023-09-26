@@ -102,11 +102,7 @@ Let's start off by simply requesting a cookie.<br />
 We'll go by Stan for this one, as that name is not blacklisted in the default configuration.
 
 ``` bash title="Get Cookie (Unauthenticated)"
-curl --location --request POST 'http://localhost:3000/example/cookies/' \
-     --header 'Content-Type: application/json' \
-     --data-raw '{
-         "name": "Stan"
-     }'
+curl --location 'http://localhost:3000/exampleModule/cookies/guest?name=Stan' 
 ```
 ``` bash title="Response"
 {
@@ -118,11 +114,7 @@ Great, we got our first cookie, hopefully they're not keeping tabs on us, so we 
 Let's try once more, this time going by Betty.
 
 ``` bash title="Get Cookie (Unauthenticated)"
-curl --location --request POST 'http://localhost:3000/example/cookies/' \
-     --header 'Content-Type: application/json' \
-     --data-raw '{
-         "name": "Betty"
-     }'
+curl --location 'http://localhost:3000/exampleModule/cookies/guest?name=Betty' 
 ```
 ``` bash title="Response"
 {
@@ -138,7 +130,7 @@ We assume you already know how to [create and authenticate your users](../module
 and have already obtained our own user authentication token.
 
 ``` bash title="Get Cookie (User Authentication)"
-curl --location --request GET 'http://localhost:3000/example/cookies' \
+curl --location --request GET 'http://localhost:3000/exampleModule/cookies' \
      --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzODhjZTVlZTFlMDAzYjdmZGU4YzY1ZiIsImF1dGhvcml6ZWQiOnRydWUsInN1ZG8iOnRydWUsImlhdCI6MTY2OTk5MjYzNiwiZXhwIjoxNjczNTkyNjM2fQ.oCAELwBektsfINwa1EaxmrhtSVuhM7xvcccf2xQb948'
 ```
 ``` bash title="Response"
