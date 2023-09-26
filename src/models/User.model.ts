@@ -4,11 +4,8 @@
 // but you can use it to ergonomically perform User related db queries.
 // It also provides a type signature for User variables.
 
-import {
-  ConduitActiveSchema,
-  DatabaseProvider,
-  Indexable,
-} from '@conduitplatform/grpc-sdk';
+import { DatabaseProvider, Indexable } from '@conduitplatform/grpc-sdk';
+import { ConduitActiveSchema } from '@conduitplatform/module-tools';
 
 export class User extends ConduitActiveSchema<User> {
   private static _instance: User;

@@ -1,13 +1,15 @@
 import ConduitGrpcSdk, {
-  GrpcServer,
-  RoutingManager,
   ConduitRouteActions,
   ConduitRouteReturnDefinition,
   GrpcError,
   ParsedRouterRequest,
   UnparsedRouterResponse,
-  ConduitString,
 } from '@conduitplatform/grpc-sdk';
+import {
+  GrpcServer,
+  RoutingManager,
+  ConduitString,
+} from '@conduitplatform/module-tools';
 import { ModuleStateObject } from '../../types';
 import { CookieReceipt, User } from '../../models';
 import { status } from '@grpc/grpc-js';

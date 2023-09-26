@@ -1,6 +1,6 @@
 {
   "name": "example-module",
-  "version": "0.16.0",
+  "version": "0.16.0-alpha.20",
   "description": "A minimal module implementation example for Conduit",
   "main": "dist/index.js",
   "scripts": {
@@ -16,24 +16,15 @@
     "@types/convict": "^6.1.1",
     "@types/node": "^18.11.9",
     "copyfiles": "^2.4.1",
-    "ts-proto": "^1.135.0",
-    "typescript": "^4.9.3"
+    "ts-proto": "^1.146.0",
+    "typescript": "^5.1.5"
   },
   "dependencies": {
-    "@conduitplatform/grpc-sdk": "^0.15.7",
-    "@grpc/grpc-js": "^1.7.3",
+    "@conduitplatform/grpc-sdk": "^0.16.0-alpha.20",
+    "@conduitplatform/module-tools": "^0.16.0-alpha.20",
+    "@grpc/grpc-js": "^1.8.13",
     "convict": "^6.2.3",
     "dotenv": "^16.0.3",
     "rimraf": "^3.0.2"
-  },
-  "conduit": {
-    "dependencies": {
-      "core": {
-        "version": "^0.16"
-      },
-      "database": {
-        "version": "^0.16"
-      }
-    }
   }
 }

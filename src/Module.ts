@@ -1,12 +1,14 @@
 import ConduitGrpcSdk, {
-  ManagedModule,
   DatabaseProvider,
-  ConfigController,
   HealthCheckStatus,
-  ConduitActiveSchema,
   GrpcRequest,
   GrpcResponse,
 } from '@conduitplatform/grpc-sdk';
+import {
+  ManagedModule,
+  ConfigController,
+  ConduitActiveSchema,
+} from '@conduitplatform/module-tools';
 import {
   GetCookieRequest,
   GetCookieResponse,

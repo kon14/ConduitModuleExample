@@ -1,13 +1,15 @@
 import ConduitGrpcSdk, {
-  GrpcServer,
-  RoutingManager,
   ConduitRouteActions,
   ConduitRouteReturnDefinition,
-  ConfigController,
   ParsedRouterRequest,
   UnparsedRouterResponse,
-  ConduitNumber,
 } from '@conduitplatform/grpc-sdk';
+import {
+  GrpcServer,
+  RoutingManager,
+  ConfigController,
+  ConduitNumber,
+} from '@conduitplatform/module-tools';
 import { ModuleStateObject } from '../../types';
 
 export class AdminRoutes {
