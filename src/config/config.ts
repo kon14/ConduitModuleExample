@@ -10,7 +10,7 @@ export default {
     default: 20,
   },
   illegalNames: {
-    doc: `A collection of illegal names that can't won't be receiving cookies`,
+    doc: `A collection of illegal names that won't be receiving cookies`,
     format: 'Array',
     default: ['Alex', 'Betty', 'Charlie'],
     children: {
