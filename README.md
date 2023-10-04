@@ -54,9 +54,12 @@ Application APIs:
 It is assumed that you are building and running this in a Linux or macOS environment.<br />
 If you're using Windows, make sure you're using WSL.
 
+Before proceeding, verify you've got [protoc](https://github.com/protocolbuffers/protobuf/releases) installed on your system.
+
 ``` bash
 # Install Dependencies
 npm run setup
+
 # Build Module
 npm run build
 ```
@@ -72,6 +75,21 @@ If you don't intend to use the default deployment configuration provided by Cond
 ``` bash
 # Start Module
 npm run start
+```
+
+## Docker 📦
+
+You may alternatively build and run this in a container.<br />
+The following assumes you're connecting to a deployment configured via the CLI.
+
+``` bash
+# Build the Docker image
+docker build -t conduit-module-example . -f Dockerfile
+
+# Run the container
+docker run -it -p 55200:55200 -e CONDUIT_SERVER="conduit:55152" -e SERVICE_URL="conduit-module-example:55200" \
+-e GRPC_PORT="55200" -e METRICS_PORT="9200" -e LOKI_URL="http://conduit-loki:3100" -e GRPC_KEY="" \
+--network conduit --network-alias conduit-module-example --name conduit-module-example conduit-module-example
 ```
 
 ## Now What 🤔

@@ -1,0 +1,16 @@
+# Project
+dist
+node_modules
+.env
+.gitignore
+Dockerfile
+LICENSE
+README.md
+src/proto/**
+
+# IDEs
+.idea
+.vscode
+
+# System
+.DS_Store
